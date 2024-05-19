@@ -1,0 +1,27 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "80:80"
+  db:
+    image: postgres:16.3-bookworm
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./db/stock.sql:/docker-entrypoint-initdb.d/stock.sql
+      - ./db/seed.py:/docker-entrypoint-initdb.d/seed.py
+    command: >
+      bash -c "
+      docker-entrypoint.sh postgres &
+      sleep 10 &&
+      psql -U postgres -d postgres -f /docker-entrypoint-initdb.d/stock.sql &&
+      python3 /docker-entrypoint-initdb.d/seed.py
+      "
+    ports:
+      - "5432:5432"
