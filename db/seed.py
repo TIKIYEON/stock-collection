@@ -43,7 +43,7 @@ def seed_data(file, sid, stock_id):
 for file in glob.glob(f"{data_dir}/*.csv"):
     stock_id = os.path.basename(file).split(".")[0]
     cur.execute("""
-    INSERT INTO Stocks (sid)
+    INSERT INTO Stocks (stock_id)
     VALUES (%s)
     """, (stock_id))
     seed_data(file, count, stock_id)
