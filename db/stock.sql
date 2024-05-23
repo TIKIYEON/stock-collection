@@ -16,16 +16,6 @@ CREATE TABLE Portfolios (
     FOREIGN KEY (user_id) REFERENCES Users(uid)
 );
 
-CREATE TABLE PortfolioElements (
-    peid SERIAL PRIMARY KEY,
-    date DATE,
-    price_change VARCHAR(50),
-    purcase_time TIME,
-    portfolio_id INT,
-    stock_id INT,
-    FOREIGN KEY (stock_id) REFERENCES Stocks(sid),
-    FOREIGN KEY (portfolio_id) REFERENCES Portfolios(pid)
-);
 
 /*
 Use to reference the relevant stock elements form purchase 
