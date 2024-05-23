@@ -12,9 +12,19 @@ CREATE TABLE Users (
  */
 CREATE TABLE Portfolios (
     pid SERIAL PRIMARY KEY,
-    user_id INT,
+    value DECIMAL(10, 2),
     FOREIGN KEY (user_id) REFERENCES Users(uid)
 );
+
+CREATE TABLE PortfolioElement (
+    buying_date DATE,
+    buying_price DECIMAL(10, 2),
+    price_change DECIMAL(10, 2),
+    portfolio_id INT,
+    stock_id INT,
+    FOREIGN KEY (portfolio_id) REFERENCES Portfolios(pid),
+    FOREIGN KEY (stock_id) REFERENCES Stocks(sid)
+)
 
 
 /*
@@ -26,7 +36,6 @@ CREATE TABLE Stocks (
 );
 
 CREATE TABLE StockElements (
-    sid SERIAL PRIMARY KEY,
     date DATE,
     adj_close DECIMAL(10, 2),
     close DECIMAL(10, 2),
@@ -34,5 +43,5 @@ CREATE TABLE StockElements (
     low DECIMAL(10, 2),
     high DECIMAL(10, 2),
     stock_id INT,
-    FOREIGN KEY (stock_id) REFERENCES Stocks(sid)
+    FOREIGN KEY (stock_id) REFERENCES Stocks(sid) ON DELETE CASCADE
 );
