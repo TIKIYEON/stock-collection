@@ -24,4 +24,4 @@ services:
       python3 /docker-entrypoint-initdb.d/seed.py
       "
     ports:
-      - "5432:5432"
+      - "5433:5432"

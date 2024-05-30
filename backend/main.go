@@ -1,6 +1,9 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+    "example.com/m/v2/Initializers"
+)
 
 func main() {
     r := gin.Default()
@@ -10,4 +13,5 @@ func main() {
         })
     })
     r.Run() // listen and serve on
+    initializers.ConnectDatabse()
 }
