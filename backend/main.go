@@ -1,17 +1,21 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-    "example.com/m/v2/Initializers"
+    "StockCollection/Initializers"
+    "github.com/gin-gonic/gin"
 )
+
+func init() {
+    Initializers.LoadEnvVariables()
+    Initializers.ConnectToDatabase()
+}
 
 func main() {
     r := gin.Default()
-    r.GET("/", func(c *gin.Context) {
+    r.GET("/ping", func(c *gin.Context) {
         c.JSON(200, gin.H{
-            "message": "Welcome to the Gin API",
+            "message": "pong",
         })
     })
     r.Run() // listen and serve on
-    initializers.ConnectDatabse()
 }
