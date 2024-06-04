@@ -26,9 +26,11 @@ for file in "$DATA_DIR"/*.csv; do
     # Get the sid for the stock identifier
     sid=$(cat sid.txt | xargs)
 
+
     # Load the data from the csv files into the StockElements table
     psql -U postgres -d stocks -c "\copy StockElements(date, open, high, low, close, adj_close, volume) FROM '$file' DELIMITER ',' CSV HEADER;"
-
     # Update the stock_id in the StockElements table
     psql -U postgres -d stocks -c "UPDATE StockElements SET stock_id = $sid WHERE stock_id IS NULL;"
 done
+
+# psql -U postgres -d stocks -c "TRUNCATE TABLE StockElements RESTART IDENTITY CASCADE;"

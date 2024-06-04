@@ -1,0 +1,9 @@
+# Virtual environment
+.venv/
+
+# Directories inside db
+db/bin/
+db/include/
+db/lib/
+db/lib64/
+
