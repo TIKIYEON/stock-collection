@@ -2,8 +2,9 @@
 .venv/
 
 # Directories inside db
-db/bin/
-db/include/
-db/lib/
-db/lib64/
+seeder/bin/
+seeder/include/
+seeder/lib/
+seeder/lib64/
+seeder/*.cfg
 

@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS PortfolioElement (
 
 CREATE TABLE IF NOT EXISTS StockElements (
     date DATE,
-    open DECIMAL(10, 16),
-    high DECIMAL(10, 16),
-    low DECIMAL(10, 16),
-    close DECIMAL(10, 16),
-    adj_close DECIMAL(10, 16),
-    volume INT,
+    open DECIMAL(20, 16),
+    high DECIMAL(20, 16),
+    low DECIMAL(20, 16),
+    close DECIMAL(20, 16),
+    adj_close DECIMAL(20, 16),
+    volume BIGINT,
     stock_id INT,
     FOREIGN KEY (stock_id) REFERENCES Stocks(sid) ON DELETE CASCADE
 );
