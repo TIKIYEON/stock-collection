@@ -27,5 +27,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  seeder:
+    build: ./seeder
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DN_NAME=stocks
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
 volumes:
   postgres_data:
