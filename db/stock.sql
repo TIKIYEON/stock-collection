@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS Stocks (
 
 CREATE TABLE IF NOT EXISTS PortfolioElement (
     buying_date DATE,
-    buying_price DECIMAL(10, 2),
-    price_change DECIMAL(10, 2),
+    buying_price DECIMAL(10, 4),
+    price_change DECIMAL(10, 4),
     portfolio_id INT,
     stock_id INT,
     FOREIGN KEY (portfolio_id) REFERENCES Portfolio(pid),
@@ -28,11 +28,11 @@ CREATE TABLE IF NOT EXISTS PortfolioElement (
 
 CREATE TABLE IF NOT EXISTS StockElements (
     date DATE,
-    open DECIMAL(10, 2),
-    high DECIMAL(10, 2),
-    low DECIMAL(10, 2),
-    close DECIMAL(10, 2),
-    adj_close DECIMAL(10, 2),
+    open DECIMAL(10, 16),
+    high DECIMAL(10, 16),
+    low DECIMAL(10, 16),
+    close DECIMAL(10, 16),
+    adj_close DECIMAL(10, 16),
     volume INT,
     stock_id INT,
     FOREIGN KEY (stock_id) REFERENCES Stocks(sid) ON DELETE CASCADE
