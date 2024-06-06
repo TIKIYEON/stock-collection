@@ -14,4 +14,3 @@ WORKDIR /db
 COPY ./data ./data
 
 COPY stock.sql /docker-entrypoint-initdb.d
-COPY load_data.sh /docker-entrypoint-initdb.d
