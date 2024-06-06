@@ -2,7 +2,7 @@ package main
 
 import (
 	"StockCollection/Initializers"
-
+    "StockCollection/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,12 +13,8 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on
+	r.POST("/register", controllers.UserCreate)
+	r.Run() // listen and serve on port 8080
 }
 
 /*
