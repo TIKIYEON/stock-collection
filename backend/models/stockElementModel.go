@@ -5,7 +5,7 @@ import (
 )
 
 // StockElement table containing all the stock elements from the data sourc
-type StockElement struct {
+type Stockelement struct {
 	Date     time.Time `gorm:"type:date"`
 	Open     float64   `gorm:"type:decimal"`
 	High     float64   `gorm:"type:decimal(20,16)"`
