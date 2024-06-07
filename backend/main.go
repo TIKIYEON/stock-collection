@@ -16,6 +16,6 @@ func init() {
 func main() {
 	r := gin.Default()
 	controllers.UserControllerRegister(&r.RouterGroup)
-	//r.POST("/register", controllers.UserCreate)
+	controllers.StockControllerRegister(&r.RouterGroup)
 	r.Run() // listen and serve on port 8080
 }
