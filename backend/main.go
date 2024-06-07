@@ -2,7 +2,9 @@ package main
 
 import (
 	"StockCollection/Initializers"
-    "StockCollection/controllers"
+
+	"StockCollection/controllers"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,12 +15,7 @@ func init() {
 
 func main() {
 	r := gin.Default()
-	r.POST("/register", controllers.UserCreate)
+	controllers.UserControllerRegister(&r.RouterGroup)
+	//r.POST("/register", controllers.UserCreate)
 	r.Run() // listen and serve on port 8080
 }
-
-/*
-CRUD links to consider:
-- https://fenyuk.medium.com/golang-crud-in-rest-api-in-a-generic-way-9c395a60309e
-- https://dev.to/samzhangjy/restful-crud-with-golang-for-beginners-23ia
-*/

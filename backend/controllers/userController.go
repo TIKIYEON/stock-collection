@@ -9,59 +9,58 @@ import (
 	"StockCollection/Initializers"
 )
 
-/*
 func UserControllerRegister(router *gin.RouterGroup) {
-    router.GET("/user", getUser)
-    router.POST("/user", createUser)
-    router.PUT("/user", updateUser)
-    router.DELETE("/user", deleteUser)
+	router.POST("/user", UserCreate)
+	router.GET("/user", CheckUserExists)
 }
-*/
 
+func CheckUserExists(c *gin.Context) {
+	// Get data from request
+	var user models.User
 
+	if err := c.BindJSON((&user)); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	// Check if user exists
+	var existingUser models.User
+	result := Initializers.DB.Where(&models.User{Mail: user.Mail, Password: user.Password}).First(&existingUser)
+
+	if result.Error != nil {
+		log.Printf("Failed to find user: %v", result.Error)
+		c.JSON(500, gin.H{"error": "Failed to find user"})
+		return
+	}
+
+	// Return response
+	c.JSON(200, gin.H{
+		"user": existingUser,
+	})
+
+}
+
+// UserCreate creates a new user
 func UserCreate(c *gin.Context) {
-    // Get data from request
-    /*
-    var newUser struct {
-        UID uint `json:"uid"`
-        Password string `json:"password"`
-        Mail string `json:"mail"`
-        PhoneNumber string `json:"phone_number"`
-    }
+	// Get data from request
+	var newUser models.User
 
-    if err := c.BindJSON((&newUser)); err != nil {
-        c.JSON(400, gin.H{"error": "Invalid request"})
-        return
-    }
-    */
-    var newUser models.User
+	if err := c.BindJSON((&newUser)); err != nil {
+		c.JSON(400, gin.H{"error": "Invalid request"})
+		return
+	}
 
-    if err := c.BindJSON((&newUser)); err != nil {
-        c.JSON(400, gin.H{"error": "Invalid request"})
-        return
-    }
+	// Create user in database
+	result := Initializers.DB.Create(&newUser)
 
-    // Create user in database
-    /*
-    user := models.User{UID: newUser.UID, Password: newUser.Password, Mail: newUser.Mail, PhoneNumber: newUser.PhoneNumber}
-    result := Initializers.DB.Create(&user)
+	if result.Error != nil {
+		log.Printf("Failed to create user: %v", result.Error)
+		c.JSON(500, gin.H{"error": "Failed to create user"})
+		return
+	}
 
-    if result.Error != nil {
-        log.Printf("Failed to create user: %v", result.Error)
-        c.JSON(500, gin.H{"error": "Failed to create user"})
-        return
-    }
-    */
-    result := Initializers.DB.Create(&newUser)
-
-    if result.Error != nil {
-        log.Printf("Failed to create user: %v", result.Error)
-        c.JSON(500, gin.H{"error": "Failed to create user"})
-        return
-    }
-
-    // Return response
-    c.JSON(201, gin.H{
-        "user": newUser,
-    })
+	// Return response
+	c.JSON(201, gin.H{
+		"user": newUser,
+	})
 }

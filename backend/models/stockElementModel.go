@@ -13,6 +13,6 @@ type StockElement struct {
 	Close    float64   `gorm:"type:decimal(20,16)"`
 	AdjClose float64   `gorm:"type:decimal(20,16)"`
 	Volume   int64
-    StockID  uint      `gorm:"column:stock_id"`
-    Stock    Stock `gorm:"foreignKey:StockID;references:SID;constrant:OnDelete:CASCADE;"`
+	StockID  uint  `gorm:"column:stock_id"`
+	Stock    Stock `gorm:"foreignKey:StockID;references:SID;constrant:OnDelete:CASCADE;"`
 }
