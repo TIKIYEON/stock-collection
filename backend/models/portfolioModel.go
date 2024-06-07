@@ -2,8 +2,8 @@ package models
 
 // Stock table containing the stock id
 type Portfolio struct {
-	PID    uint    `gorm:"primaryKey;column:sid"`
-	Value  float64 `gorm:"type:decimal(20,16)"`
-	UserID uint    `gorm:"column:uid"`
-	User   User    `gorm:"foreignKey:UserID;references:UID;constrant:OnDelete:CASCADE;"`
+	PID    uint    `gorm:"primaryKey;column:pid" json:"pid"`
+	Value  float64 `gorm:"type:decimal(10,2)" json:"value"`
+	UserID uint    `gorm:"column:user_id" json:"user_id"`
+	User   User    `gorm:"foreignKey:UserID;references:UID"`
 }
