@@ -16,3 +16,7 @@ type Stockelement struct {
 	StockID  uint  `gorm:"column:stock_id"`
 	Stock    Stock `gorm:"foreignKey:StockID;references:SID;constrant:OnDelete:CASCADE;"`
 }
+
+func (Stockelement) TableName() string {
+	return "stockelements"
+}
