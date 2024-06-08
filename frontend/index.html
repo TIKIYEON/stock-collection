@@ -3,70 +3,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stock Collection</title>
   <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+
   <style>
     /* Style for the output box */
     #output-box {
-        border: 1px solid #ccc;
+        border: 3px solid #ccc;
         padding: 10px;
         margin-top: 20px;
         overflow-y: auto; /* Enable vertical scrolling if content exceeds box height */
         max-height: 300px; /* Set max height to limit box size */
     }
+
+    input[type="text"], input[type="password"], input[type="submit"] {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        } 
   </style>
 </head>
 
-
+<nav>
+  <a href="stockies.html">Stonks</a>
+  <a href="portfolios.html">Port</a>
+</nav>
 
 <body>
-  <h1>Main Headline</h1>
-  <h2>Secondary Headline</h2>
-  <h3>Tertiary Headline</h3>
-  <h4>Quaternary Headline</h4>
-  <h5>Quinary Headline</h5>
-  <h6>Senary Headline</h6>
+  <h1>Login / Register</h1>
 
+  <form id="login-form" action="/login" method="post">
+    <input type="text" name="mail" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="submit" value="Login">
+  </form>
 
   <!-- have a button POST a click via AJAX -->
-  <button hx-on="click: alert(Clicked!)">
-    Klik Mig
-  </button>
-  
-  <button hx-on="click: alert(Clicked!)">
-    Click Me
-  </button>
-  
-  <button hx-on="click: alert(Clicked!)">
-    Click Me
-  </button>
+  <button class="nav-button" onclick="navigateToPage('stockies.html')">LOGIN</button>
 
-  <button hx-get="/backend" hx-trigger="click" hx-target="#stock-ids">
-    Get Stock IDs
-  </button>
-
-
-  <button onclick="fetchData()">Fetch Data</button>
-
-  <pre id="data-container"></pre>
-  <div id="output-box"></div>
 
   <script>
-      async function fetchData() {
-          try {
-              const response = await fetch('http://localhost:8080/stocks'); // Adjust the URL to match your backend route
-              const data = await response.json();
-              // Convert the data object to a JSON string with proper indentation
-              const jsonData = JSON.stringify(data, null, 2);
-              const outputBox = document.getElementById('output-box');
-              outputBox.innerText = jsonData + '\n'; // put new output to existing content
-              // Scroll to the bottom of the output box to show the latest content
-              outputBox.scrollTop = outputBox.scrollHeight;
-          } catch (error) {
-              console.error('Error fetching data:', error);
-          }
+      // Function to navigate to the specified page
+      function navigateToPage(page) {
+          // Navigate to the specified page
+          window.location.href = page;
       }
   </script>
-
-  <!-- <div id="stock-ids"></div> -->
-
-
 </body>

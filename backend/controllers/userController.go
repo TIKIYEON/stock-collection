@@ -12,34 +12,26 @@ import (
 
 func UserControllerRegister(router *gin.RouterGroup) {
 	router.POST("/user", UserCreate)
-	router.GET("/user", CheckUserExists)
+	// router.GET("/user", CheckUserExists)
 	router.GET("/user/:user_id/portfolio", GetUserPortfolios)
 }
 
-func CheckUserExists(c *gin.Context) {
-	// Get data from request
+func CheckUserExists(c *gin.Context, mail, password string) bool {
+	// Get user record from the database based on the provided username
 	var user models.User
-
-	if err := c.BindJSON((&user)); err != nil {
-		c.JSON(400, gin.H{"error": "Invalid request"})
-		return
+	if err := Initializers.DB.Where("mail = ?", mail).First(&user).Error; err != nil {
+		// User not found in the database
+		return false
 	}
 
-	// Check if user exists
-	var existingUser models.User
-	result := Initializers.DB.Where(&models.User{Mail: user.Mail, Password: user.Password}).First(&existingUser)
-
-	if result.Error != nil {
-		log.Printf("Failed to find user: %v", result.Error)
-		c.JSON(500, gin.H{"error": "Failed to find user"})
-		return
+	// Compare the password provided in the request with the stored password
+	if user.Password == password {
+		// Passwords match, indicating valid credentials
+		return true
 	}
 
-	// Return response
-	c.JSON(200, gin.H{
-		"user": existingUser,
-	})
-
+	// Passwords don't match
+	return false
 }
 
 // UserCreate creates a new user

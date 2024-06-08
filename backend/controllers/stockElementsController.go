@@ -26,7 +26,10 @@ func GetStockElementsFromStockID(c *gin.Context) {
 	log.Printf("Received stock_id: %v", StockID)
 
 	//result := Initializers.DB.Where("stock_id = ?", uint(stockIDUint)).Find(&stockElements)
-	result := Initializers.DB.Where(&models.Stockelement{StockID: uint(stockIDUint)}).Find(&stockElements)
+	// result := Initializers.DB.Where(&models.Stockelement{StockID: uint(stockIDUint)}).Find(&stockElements)
+	result := Initializers.DB.Where(&models.Stockelement{StockID: uint(stockIDUint)}).
+		Order("Date DESC").
+		First(&stockElements)
 
 	if result.Error != nil {
 		log.Printf("Failed to find stocks: %v", result.Error)
