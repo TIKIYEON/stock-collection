@@ -3,6 +3,7 @@ package controllers
 import (
 	"StockCollection/models"
 	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -12,6 +13,7 @@ import (
 func UserControllerRegister(router *gin.RouterGroup) {
 	router.POST("/user", UserCreate)
 	router.GET("/user", CheckUserExists)
+	router.GET("/user/:user_id/portfolio", GetUserPortfolios)
 }
 
 func CheckUserExists(c *gin.Context) {
@@ -62,5 +64,40 @@ func UserCreate(c *gin.Context) {
 	// Return response
 	c.JSON(201, gin.H{
 		"user": newUser,
+	})
+}
+
+// GetUserPortfolios gets all portfolios of a user
+func GetUserPortfolios(c *gin.Context) {
+	userID := c.Param("user_id")
+
+	userIDUint, err := strconv.ParseUint(userID, 10, 64)
+	if err != nil {
+		log.Printf("Failed to parse user_id: %v", err)
+		c.JSON(400, gin.H{"error": "user_id path parameter is not a number"})
+		return
+	}
+
+	// Check if the user exists
+	var user models.User
+	if err := Initializers.DB.Where(&models.User{UID: uint(userIDUint)}).First(&user).Error; err != nil {
+		log.Printf("Failed to find user: %v", err)
+		c.JSON(404, gin.H{"error": "User not found"})
+		return
+	}
+
+	// Retrieve all portfolios of the user
+	var portfolios []models.Portfolio
+	if err := Initializers.DB.Where(&models.Portfolio{UserID: uint(userIDUint)}).
+		Preload("User").
+		Find(&portfolios).Error; err != nil {
+		log.Printf("Failed to find portfolios: %v", err)
+		c.JSON(500, gin.H{"error": "Failed to find portfolios"})
+		return
+	}
+
+	// Return response
+	c.JSON(200, gin.H{
+		"portfolios": portfolios,
 	})
 }
