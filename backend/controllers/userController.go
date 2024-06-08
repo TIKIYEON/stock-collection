@@ -13,7 +13,7 @@ import (
 func UserControllerRegister(router *gin.RouterGroup) {
 	router.POST("/user", UserCreate)
 	// router.GET("/user", CheckUserExists)
-	router.GET("/user/:user_id/portfolio", GetUserPortfolios)
+	// router.GET("/user/:user_id/portfolio", GetUserPortfolio)
 }
 
 func CheckUserExists(c *gin.Context, mail, password string) bool {
@@ -53,6 +53,11 @@ func UserCreate(c *gin.Context) {
 		return
 	}
 
+	// Create portfolio for the user
+	var newPortfolio models.Portfolio
+	newPortfolio.UserID = newUser.UID
+	Initializers.DB.Create(&newPortfolio)
+
 	// Return response
 	c.JSON(201, gin.H{
 		"user": newUser,
@@ -60,7 +65,7 @@ func UserCreate(c *gin.Context) {
 }
 
 // GetUserPortfolios gets all portfolios of a user
-func GetUserPortfolios(c *gin.Context) {
+func GetUserPortfolio(c *gin.Context) {
 	userID := c.Param("user_id")
 
 	userIDUint, err := strconv.ParseUint(userID, 10, 64)
@@ -89,10 +94,10 @@ func GetUserPortfolios(c *gin.Context) {
 	   	} */
 
 	// Retreive user and preload portfolios and stocks
-	var userWithPortfolios models.User
+	var userWithPortfolio models.User
 	if err := Initializers.DB.Where(&models.User{UID: uint(userIDUint)}).
 		Preload("Portfolios.Stocks").
-		First(&userWithPortfolios).Error; err != nil {
+		First(&userWithPortfolio).Error; err != nil {
 		log.Printf("Failed to find user: %v", err)
 		c.JSON(500, gin.H{"error": "Failed to find user"})
 		return
@@ -100,6 +105,6 @@ func GetUserPortfolios(c *gin.Context) {
 
 	// Return response
 	c.JSON(200, gin.H{
-		"portfolios": userWithPortfolios.Portfolios,
+		"portfolios": userWithPortfolio.Portfolio,
 	})
 }
