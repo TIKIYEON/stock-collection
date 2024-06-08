@@ -10,13 +10,13 @@ import (
 )
 
 func StockElementsControllerRegister(router *gin.RouterGroup) {
-	router.GET("/stockelements", GetStockElementsFromStockID)
+	router.GET("/stockelements/:stock_id", GetStockElementsFromStockID)
 }
 
 func GetStockElementsFromStockID(c *gin.Context) {
 	var stockElements []models.Stockelement
 
-	StockID := c.Query("stock_id")
+	StockID := c.Param("stock_id")
 
 	stockIDUint, err := strconv.ParseUint(StockID, 10, 64)
 	if err != nil {
@@ -25,11 +25,10 @@ func GetStockElementsFromStockID(c *gin.Context) {
 
 	log.Printf("Received stock_id: %v", StockID)
 
-	//result := Initializers.DB.Where("stock_id = ?", uint(stockIDUint)).Find(&stockElements)
-	// result := Initializers.DB.Where(&models.Stockelement{StockID: uint(stockIDUint)}).Find(&stockElements)
 	result := Initializers.DB.Where(&models.Stockelement{StockID: uint(stockIDUint)}).
 		Order("Date DESC").
-		First(&stockElements)
+		Limit(100).
+		Find(&stockElements)
 
 	if result.Error != nil {
 		log.Printf("Failed to find stocks: %v", result.Error)

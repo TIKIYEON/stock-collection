@@ -19,16 +19,16 @@ func main() {
 	r := gin.Default()
 
 	r.Use(func(c *gin.Context) {
-        c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-        c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
-        c.Writer.Header().Set("Access-Control-Max-Age", "86400")
-        if c.Request.Method == "OPTIONS" {
-            c.AbortWithStatus(200)
-            return
-        }
-        c.Next()
-    })
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
+		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(200)
+			return
+		}
+		c.Next()
+	})
 
 	r.Static("/static", "./frontend")
 
@@ -41,16 +41,16 @@ func main() {
 }
 
 func loginHandler(c *gin.Context) {
-    // Retrieve username and password from the request
-    mail := c.PostForm("mail")
-    password := c.PostForm("password")
+	// Retrieve username and password from the request
+	mail := c.PostForm("mail")
+	password := c.PostForm("password")
 
-    // Check if user exists and if the provided password matches
-    if controllers.CheckUserExists(c, mail, password) {
-        // Authentication successful
-        c.String(http.StatusOK, "Login successful!")
-    } else {
-        // Authentication failed
-        c.String(http.StatusUnauthorized, "Invalid username or password")
-    }
+	// Check if user exists and if the provided password matches
+	if controllers.CheckUserExists(c, mail, password) {
+		// Authentication successful
+		c.String(http.StatusOK, "Login successful!")
+	} else {
+		// Authentication failed
+		c.String(http.StatusUnauthorized, "Invalid username or password")
+	}
 }

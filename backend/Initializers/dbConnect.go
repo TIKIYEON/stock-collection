@@ -1,7 +1,8 @@
 package Initializers
 
 import (
-	//"StockCollection/models"
+	"StockCollection/models"
+	"log"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -22,5 +23,16 @@ func ConnectToDatabase() {
 
 	if err != nil {
 		panic("Failed to connect to database!")
+	}
+
+	errs := DB.AutoMigrate(&models.Stock{},
+		&models.Stockelement{},
+		&models.User{},
+		&models.Portfolio{})
+
+	if errs != nil {
+		log.Fatalf("Failed to migrate: %v", err)
+	} else {
+		log.Println("Migration successful")
 	}
 }

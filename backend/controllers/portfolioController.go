@@ -3,6 +3,7 @@ package controllers
 import (
 	"StockCollection/Initializers"
 	"StockCollection/models"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -11,9 +12,9 @@ import (
 
 // PortfolioControllerRegister registers the portfolio controller
 func PortfolioControllerRegister(router *gin.RouterGroup) {
-	router.GET("/portfolio", GetPortfolio)
-	router.GET("/portfolios", GetPortfolios)
-	router.POST("/user/:user_id/portfolio", CreatePortfolio)
+	router.GET("/user/:user_id/portfolio", GetPortfolioByUserID)
+	//router.POST("/user/:user_id/portfolio", CreatePortfolio)
+	router.PUT("/user/:user_id/stock/:stock_id", AddStockToPortfolio)
 }
 
 // GetPortfolio gets a portfolio
@@ -26,7 +27,7 @@ func GetPortfolio(c *gin.Context) {
 	}
 
 	var existingPortfolio models.Portfolio
-	result := Initializers.DB.Where(&models.Portfolio{PID: portfolio.PID}).First(&existingPortfolio)
+	result := Initializers.DB.Where(&models.Portfolio{PortfolioID: portfolio.PortfolioID}).First(&existingPortfolio)
 
 	if result.Error != nil {
 		log.Printf("Failed to find portfolio: %v", result.Error)
@@ -53,6 +54,31 @@ func GetPortfolios(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"portfolios": portfolios,
+	})
+}
+
+func GetPortfolioByUserID(c *gin.Context) {
+	var portfolio models.Portfolio
+
+	UserID := c.Param("user_id")
+
+	UserIDUint, err := strconv.ParseUint(UserID, 10, 64)
+	if err != nil {
+		log.Printf("Failed to parse user_id: %v", err)
+		c.JSON(400, gin.H{"error": "user_id path parameter is not a number"})
+		return
+	}
+
+	result := Initializers.DB.Where(&models.Portfolio{UserID: uint(UserIDUint)}).Preload("Stocks").First(&portfolio)
+
+	if result.Error != nil {
+		log.Printf("Failed to find portfolio given User ID")
+		c.JSON(500, gin.H{"error": "Failed to find portfolio given User ID"})
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"portfolio": portfolio,
 	})
 }
 
@@ -92,14 +118,51 @@ func CreatePortfolio(c *gin.Context) {
 		return
 	}
 
-	// Load the related User entity
-	if err := Initializers.DB.Model(&portfolio).Association("User").Find(&portfolio.User); err != nil {
-		log.Printf("Failed to load related user: %v", err)
-		c.JSON(500, gin.H{"error": "Failed to load related user"})
+	c.JSON(201, gin.H{
+		"portfolio": portfolio,
+	})
+}
+
+func AddStockToPortfolio(c *gin.Context) {
+	var portfolio models.Portfolio
+	UserID := c.Param("user_id")
+
+	UserIDUint, err := strconv.ParseUint(UserID, 10, 64)
+	if err != nil {
+		log.Printf("Failed to parse user_id: %v", err)
+		c.JSON(400, gin.H{"error": "user_id path parameter is not a number"})
 		return
 	}
 
-	c.JSON(201, gin.H{
+	Initializers.DB.Where(&models.Portfolio{UserID: uint(UserIDUint)}).Preload("Stocks").First(&portfolio)
+
+	var stock models.Stock
+	stockID := c.Param("stock_id")
+
+	stockIDUint, err := strconv.ParseUint(stockID, 10, 64)
+	if err != nil {
+		log.Printf("Failed to parse stock_id: %v", err)
+		c.JSON(400, gin.H{"error": "stock_id path parameter is not a number"})
+		return
+	}
+
+	Initializers.DB.Where(&models.Stock{SID: uint(stockIDUint)}).First(&stock)
+
+	//check if stock is already in portfolio
+	for _, s := range portfolio.Stocks {
+		if s.SID == stock.SID {
+			c.JSON(400, gin.H{"error": "Stock is already in portfolio"})
+			return
+		}
+	}
+
+	if err := Initializers.DB.Model(&portfolio).Association("Stocks").Append(&stock); err != nil {
+		fmt.Printf("Error associating stock with portfolio: %v\n", err)
+	} else {
+		fmt.Println("Successfully associated stock with portfolio.")
+	}
+
+	c.JSON(200, gin.H{
 		"portfolio": portfolio,
 	})
 }
