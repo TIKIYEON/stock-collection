@@ -79,17 +79,27 @@ func GetUserPortfolios(c *gin.Context) {
 	}
 
 	// Retrieve all portfolios of the user
-	var portfolios []models.Portfolio
-	if err := Initializers.DB.Where(&models.Portfolio{UserID: uint(userIDUint)}).
-		Preload("User").
-		Find(&portfolios).Error; err != nil {
-		log.Printf("Failed to find portfolios: %v", err)
-		c.JSON(500, gin.H{"error": "Failed to find portfolios"})
+	/* 	var portfolios []models.Portfolio
+	   	if err := Initializers.DB.Where(&models.Portfolio{UserID: uint(userIDUint)}).
+	   		Preload("User").
+	   		Find(&portfolios).Error; err != nil {
+	   		log.Printf("Failed to find portfolios: %v", err)
+	   		c.JSON(500, gin.H{"error": "Failed to find portfolios"})
+	   		return
+	   	} */
+
+	// Retreive user and preload portfolios and stocks
+	var userWithPortfolios models.User
+	if err := Initializers.DB.Where(&models.User{UID: uint(userIDUint)}).
+		Preload("Portfolios.Stocks").
+		First(&userWithPortfolios).Error; err != nil {
+		log.Printf("Failed to find user: %v", err)
+		c.JSON(500, gin.H{"error": "Failed to find user"})
 		return
 	}
 
 	// Return response
 	c.JSON(200, gin.H{
-		"portfolios": portfolios,
+		"portfolios": userWithPortfolios.Portfolios,
 	})
 }

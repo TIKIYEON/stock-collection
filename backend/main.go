@@ -37,11 +37,6 @@ func main() {
 	controllers.StockControllerRegister(&r.RouterGroup)
 	controllers.StockElementsControllerRegister(&r.RouterGroup)
 	controllers.PortfolioControllerRegister(&r.RouterGroup)
-
-	r.POST("/login", loginHandler)
-
-
-
 	r.Run() // listen and serve on port 8080
 }
 
