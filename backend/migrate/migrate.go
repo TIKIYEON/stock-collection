@@ -14,6 +14,5 @@ func main() {
 	Initializers.DB.AutoMigrate(&models.Stock{},
 		&models.Stockelement{},
 		&models.User{},
-		&models.Portfolio{},
-		&models.Portfolioelement{})
+		&models.Portfolio{})
 }

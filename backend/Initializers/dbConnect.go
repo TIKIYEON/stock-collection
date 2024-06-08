@@ -23,6 +23,4 @@ func ConnectToDatabase() {
 	if err != nil {
 		panic("Failed to connect to database!")
 	}
-
-	//DB.AutoMigrate(&models.User{}, &models.Portfolio{}, &models.Portfolioelement{})
 }
