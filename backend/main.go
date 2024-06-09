@@ -6,8 +6,6 @@ import (
 	"StockCollection/controllers"
 
 	"github.com/gin-gonic/gin"
-
-	"net/http"
 )
 
 func init() {
@@ -38,19 +36,4 @@ func main() {
 	controllers.StockElementsControllerRegister(&r.RouterGroup)
 	controllers.PortfolioControllerRegister(&r.RouterGroup)
 	r.Run() // listen and serve on port 8080
-}
-
-func loginHandler(c *gin.Context) {
-	// Retrieve username and password from the request
-	mail := c.PostForm("mail")
-	password := c.PostForm("password")
-
-	// Check if user exists and if the provided password matches
-	if controllers.CheckUserExists(c, mail, password) {
-		// Authentication successful
-		c.String(http.StatusOK, "Login successful!")
-	} else {
-		// Authentication failed
-		c.String(http.StatusUnauthorized, "Invalid username or password")
-	}
 }

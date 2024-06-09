@@ -30,13 +30,95 @@
 </nav>
 
 <body>
-  <h1>Login / Register</h1>
-
-  <form id="login-form" action="/login" method="post">
-    <input type="text" name="mail" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <input type="submit" value="Login">
+  <!-- Login form -->
+  <h1>Login</h1>
+  <form id="loginForm">
+    <label for="mail">Email:</label>
+    <input type="email" id="loginmail" name="mail" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <button type="submit">Login</button>
   </form>
+  <div id="message"></div>
+  <!-- login script-->
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+        const mail = document.getElementById('loginmail').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const response = await fetch('http://localhost:8080/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mail, password })
+          });
+          const result = await response.json();
+          const message = document.getElementById('message');
+          if (response.ok) {
+            if (result["HX-Redirect"]) {
+              navigateToPage("stockies.html");
+              console.log(result.user)
+              localStorage.setItem("user", JSON.stringify(result.user.uid));
+            } else {
+              message.textContent = result.message;
+            }
+          } else {
+            message.textContent = result.error;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+    });
+  </script>
+
+  <!-- Register form-->
+  <h2>Register</h2>
+  <form id="registerForm">
+    <label for="mail">Email:</label>
+    <input type="email" id="mail" name="mail" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="passwordid" name="password" required><br><br>
+    <label for="phone">Phone:</label>
+    <input type="phone" id="phone" name="phone" required><br><br>
+    <button type="submit">Register new user</button>
+  </form>
+  <!-- register script-->
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+
+        const mail = document.getElementById('mail').value;
+        const password = document.getElementById('passwordid').value;
+        const phone = document.getElementById('phone').value
+
+        const data = { mail:mail, password:password, phone:phone };
+        console.log(data);
+
+        const response = await fetch('http://localhost:8080/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data =>{
+          if (data.success) {
+            message.textContent = "Registration Successful";
+          } else {
+            message.textContent = "Registration failed: " + data.message;
+          }
+        })
+        .catch(error => {
+          message.textContent = "Error: " + error.message;
+        });
+    });
+  </script>
+
 
   <!-- have a button POST a click via AJAX -->
   <button class="nav-button" onclick="navigateToPage('stockies.html')">LOGIN</button>
