@@ -17,6 +17,12 @@
 </head>
   
 <body>
+    <nav>
+        <a href="index.html">Logout</a>
+        <a href="stockies.html">Stocks</a>
+    </nav>
+    
+    <h1> Portfolio </h1>
 
     <button onclick="GetPortfolioFromUID()">See Stocks in Portfolio</button>
     <script>
@@ -68,7 +74,8 @@
             console.error('Error fetching data:', error);
         }
     }
-    var stockIds = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+    var stockIds = [[1, " AAPL"],[2, " ADBE"],[3, " ADI"],[4, " ADP"],[5, "ALGN"],[6, "AMD"],
+                        [7, " AMGN"],[8, " AMZN"],[9, " ANSS"],[10, " ASML"],[11, " AVGO"],[12, " BIIB"],[13, " BKNG"],[14, " CDNS"],[15, " CDW"]];
 
         // Get the container element
     var stockIdsContainer = document.getElementById('stockIds');
@@ -82,8 +89,8 @@
         // Add click event listener to the button
         button.addEventListener('click', function() {
             // Handle button click (e.g., fetch data for the selected stock)
-            localStorage.setItem("StockToDelete", stockId)
-            console.log('Button clicked for stock ID: ' + stockId);
+            localStorage.setItem("StockToDelete", stockId[0])
+            console.log('Button clicked for stock ID: ' + stockId[0]);
         });
 
         // Append the button to the container
