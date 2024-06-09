@@ -18,7 +18,7 @@ func main() {
 
 	r.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Accept")
 		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
 		if c.Request.Method == "OPTIONS" {

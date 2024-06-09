@@ -45,6 +45,57 @@
     </script>
 
 <div id="output-box"></div>
+
+
+
+<div id="stockIds"></div>
+<button onclick=DeleteStockFromID()>Delete stock</button>
+<script>
+    async function DeleteStockFromID() {
+        try {
+            const response = await fetch('http://localhost:8080/user/'+ FetchUID() + "/stock/" + StockToDelete() + "/portfolio", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type":"application/json"
+              }
+            });
+            const data = await response.json();
+            const jsonData = JSON.stringify(data, null, 2);
+            const outputBox = document.getElementById('output-box');
+            outputBox.innerText = jsonData + '\n';
+            outputBox.scrollTop = outputBox.scrollHeight;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+    var stockIds = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+
+        // Get the container element
+    var stockIdsContainer = document.getElementById('stockIds');
+
+    // Loop through each stock ID and create a button for it
+    stockIds.forEach(function(stockId) {
+        // Create a button element
+        var button = document.createElement('button');
+        button.textContent = stockId;
+
+        // Add click event listener to the button
+        button.addEventListener('click', function() {
+            // Handle button click (e.g., fetch data for the selected stock)
+            localStorage.setItem("StockToDelete", stockId)
+            console.log('Button clicked for stock ID: ' + stockId);
+        });
+
+        // Append the button to the container
+        stockIdsContainer.appendChild(button);
+    });
+</script>
+
+<script>
+    function StockToDelete() {
+        return localStorage.getItem("StockToDelete")
+    }
+</script>
 </body>
 
 </html>
