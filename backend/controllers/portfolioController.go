@@ -15,6 +15,7 @@ func PortfolioControllerRegister(router *gin.RouterGroup) {
 	router.GET("/user/:user_id/portfolio", GetPortfolioByUserID)
 	//router.POST("/user/:user_id/portfolio", CreatePortfolio)
 	router.PUT("/user/:user_id/stock/:stock_id", AddStockToPortfolio)
+	router.DELETE("/user/:user_id/stock/:stock_id/portfolio", RemoveStockFromPortfolio)
 }
 
 // GetPortfolio gets a portfolio
@@ -160,6 +161,58 @@ func AddStockToPortfolio(c *gin.Context) {
 		fmt.Printf("Error associating stock with portfolio: %v\n", err)
 	} else {
 		fmt.Println("Successfully associated stock with portfolio.")
+	}
+
+	c.JSON(200, gin.H{
+		"portfolio": portfolio,
+	})
+}
+
+func RemoveStockFromPortfolio(c *gin.Context) {
+	var portfolio models.Portfolio
+	UserID := c.Param("user_id")
+
+	UserIDUint, err := strconv.ParseUint(UserID, 10, 64)
+	if err != nil {
+		log.Printf("Failed to parse user_id: %v", err)
+		c.JSON(400, gin.H{"error": "user_id path parameter is not a number"})
+		return
+	}
+
+	Initializers.DB.Where(&models.Portfolio{UserID: uint(UserIDUint)}).Preload("Stocks").First(&portfolio)
+
+	var stock models.Stock
+	stockID := c.Param("stock_id")
+
+	stockIDUint, err := strconv.ParseUint(stockID, 10, 64)
+	if err != nil {
+		log.Printf("Failed to parse stock_id: %v", err)
+		c.JSON(400, gin.H{"error": "stock_id path parameter is not a number"})
+		return
+	}
+
+	Initializers.DB.Where(&models.Stock{SID: uint(stockIDUint)}).First(&stock)
+
+	//check if stock is in portfolio
+	found := false
+	for _, s := range portfolio.Stocks {
+		if s.SID == stock.SID {
+			found = true
+			break
+		}
+	}
+
+	if !found {
+		c.JSON(400, gin.H{"error": "Stock is not in portfolio"})
+		return
+	}
+
+	if err := Initializers.DB.Model(&portfolio).Association("Stocks").Delete(&stock); err != nil {
+		fmt.Println("Error deleting stock from portfolio:", err)
+		c.JSON(500, gin.H{"error": "Failed to delete stock from portfolio"})
+		return
+	} else {
+		fmt.Println("Successfully deleted stock from portfolio.")
 	}
 
 	c.JSON(200, gin.H{
