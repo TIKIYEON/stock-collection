@@ -90,6 +90,21 @@
         const password = document.getElementById('passwordid').value;
         const phone = document.getElementById('phone').value
 
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        const phoneRegex = /^\d{8}$/;
+
+        if (!passwordRegex.test(password)) {
+          message.textContent = "Invalid password, must be atleast 8 characters long, and contain both numbers and letters "
+          return
+        }
+
+        if (!phoneRegex.test(phone)) {
+          message.textContent = "phonenumber must be an 8 digit number"
+          return
+        }
+
+
+
         const data = { mail:mail, password:password, phone:phone };
         console.log(data);
 
