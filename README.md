@@ -2,7 +2,7 @@
 This is a Go-Gin web application using a Postges SQL database.
 ## Setup instructions
 To build and run the project on you machine, follow the provided setup instructions.
-This project is run preferably through Docker, but alternatives are provided.
+This project is run preferably through Docker, but alternatives are provided (untested).
 ### Using Docker
 If Docker is not already installed on your system, please follow the [official install instructions](https://www.docker.com/products/docker-desktop/).
 This project is run by the following two instructions, from the projects root directory, if you have docker compose installed:
@@ -12,14 +12,15 @@ sudo make
 ```
 sudo make run
 ```
-Or
+Or the following two:
 ```
 sudo docker compose build
 ```
 ```
 sudo docker compose up -d
 ```
-The port at which the website is served is 80 `localhost:80/`, this port can either be found in `docker-compose.yml` or by running:
+---
+The port at which the website is served is 80 `localhost:80`, this port can either be found in `docker-compose.yml` or by running:
 ```
 sudo docker compose logs db
 ```
