@@ -1,20 +1,51 @@
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Draggable Counter</title>
-<link rel="stylesheet" href="styles.css">
-<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Collection</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <style>
+        #output-box {
+            border: 3px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+            overflow-y: auto; /* Enable vertical scrolling if content exceeds box height */
+            max-height: 300px; /* Set max height to limit box size */
+        }
+    </style>
 </head>
   
 <body>
 
-    <div id="counter" class="draggable">
-        <div id="handle"></div>
-        <div id="value">0</div>
-    </div>
+    <button onclick="GetPortfolioFromUID()">See Stocks</button>
+    <script>
+        function FetchUID() {
+            uid = localStorage.getItem("user")
+            console.log(uid)
+            return uid
+            // const outputBox = document.getElementById('output-box');
 
-    <script src="script.js"></script>
-    </body>
+            // outputBox.textContent = uid
+        }
+    </script>
+    <script>
+        async function GetPortfolioFromUID() {
+            try {
+                const response = await fetch('http://localhost:8080/user/'+ FetchUID() + "/portfolio")
+                const data = await response.json();
+                const jsonData = JSON.stringify(data, null, 2);
+                const outputBox = document.getElementById('output-box');
+                outputBox.innerText = jsonData + '\n';
+                outputBox.scrollTop = outputBox.scrollHeight;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+    </script>
+
+<div id="output-box"></div>
+</body>
+
 </html>
 

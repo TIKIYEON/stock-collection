@@ -19,7 +19,7 @@
   
 <nav>
   <a href="index.html">Logout</a>
-  <a href="portfolios">Portfolios</a>
+  <a href="portfolios.html">Portfolios</a>
 </nav>
   
   <body>
@@ -58,12 +58,14 @@
     <script>
         async function fetchStockData(stockid) {
             try {
-                const response = await fetch('http://localhost:8080/stockelements?stock_id='+ stockid);
+                const response = await fetch('http://localhost:8080/stockelements/'+stockid)
                 const data = await response.json();
                 const jsonData = JSON.stringify(data, null, 2);
                 const outputBox = document.getElementById('output-box');
                 outputBox.innerText = jsonData + '\n';
                 outputBox.scrollTop = outputBox.scrollHeight;
+                let lookedAtStock = stockid
+                localStorage.setItem("lookedAtStock", lookedAtStock)
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -93,13 +95,31 @@
             stockIdsContainer.appendChild(button);
         });
     </script>
-  
-  <!-- <button class="nav-button" onclick="navigateToPage('portfolios.html')">PORTO</button> -->
+    <button onclick=SaveStockToPortfolio()>
+      Add Stock to Portfolio
+    </button> 
+    <script>
+      async function SaveStockToPortfolio() {
+        const UID = localStorage.getItem("user")
+        const SID = localStorage.getItem("lookedAtStock")
+        
+        try {
+            const response = await fetch('http://localhost:8080/user/' + UID + '/stock/' + SID,  {
+              method: "PUT",
+              headers: {
+                "Content-Type":"application/json"
+              }
+            });
+    
+            const data = await response.json();
+            const jsonData = JSON.stringify(data, null, 2);
+            const outputBox = document.getElementById('output-box');
+            outputBox.innerText = jsonData + '\n';
+            outputBox.scrollTop = outputBox.scrollHeight;
+        } catch (error) {
+            console.error('Error :', error);
+        }
+      }
 
-  <div id="counter" class="draggable">
-    <div id="handle"></div>
-    <div id="value">0</div>
-  </div>
-
-  <script src="script.js"></script>
+    </script>
   </body>
