@@ -1,8 +1,7 @@
 package models
 
 type Stock struct {
-	SID        uint        `gorm:"primaryKey;column:sid"`
-	Portfolios []Portfolio `gorm:"many2many:portfolio_stocks;"`
+	SID uint `gorm:"primaryKey;column:sid"`
 }
 
 func (Stock) TableName() string {
