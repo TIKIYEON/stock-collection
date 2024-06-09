@@ -13,7 +13,6 @@ import (
 // PortfolioControllerRegister registers the portfolio controller
 func PortfolioControllerRegister(router *gin.RouterGroup) {
 	router.GET("/user/:user_id/portfolio", GetPortfolioByUserID)
-	//router.POST("/user/:user_id/portfolio", CreatePortfolio)
 	router.PUT("/user/:user_id/stock/:stock_id", AddStockToPortfolio)
 	router.DELETE("/user/:user_id/stock/:stock_id/portfolio", RemoveStockFromPortfolio)
 }
