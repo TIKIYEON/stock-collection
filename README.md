@@ -102,4 +102,10 @@ Initializers.DB.Create(&newUser)
 ```
 
 ## Where does regex come into play?
-
+We utilize regex to ensure a consisten password and phone number format:
+```javascript
+        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        const phoneRegex = /^\d{8}$/
+```
+Password should have: At least one letter and one digit and is at least 8 characters long.
+The phone number should be exactly 8 digits long.
