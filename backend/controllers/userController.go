@@ -3,6 +3,7 @@ package controllers
 import (
 	"StockCollection/models"
 	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -11,27 +12,58 @@ import (
 )
 
 func UserControllerRegister(router *gin.RouterGroup) {
-	router.POST("/user", UserCreate)
+	//router.POST("/user", UserCreate)
 	// router.GET("/user", CheckUserExists)
 	// router.GET("/user/:user_id/portfolio", GetUserPortfolio)
+	router.POST("/login", Login)
+	router.POST("/register", UserCreate)
 }
 
-func CheckUserExists(c *gin.Context, mail, password string) bool {
-	// Get user record from the database based on the provided username
+func CheckUserExists(mail string) bool {
+	// Get user record from the database based on the provided email
 	var user models.User
 	if err := Initializers.DB.Where("mail = ?", mail).First(&user).Error; err != nil {
 		// User not found in the database
 		return false
 	}
+	// User exists in the database
+	return true
+}
 
-	// Compare the password provided in the request with the stored password
+func CheckUserCredentials(c *gin.Context, mail string, password string) bool {
+	var user models.User
+	// Check if email exists
+	if err := Initializers.DB.Where("mail = ?", mail).First(&user).Error; err != nil {
+		// c.JSON(400, gin.H{"error": "Email doesn't exists"})
+		return false
+	}
+	// password matches
 	if user.Password == password {
-		// Passwords match, indicating valid credentials
+		c.JSON(201, gin.H{"user": user, "HX-Redirect": "stockies.html"})
 		return true
 	}
-
-	// Passwords don't match
+	// password doesnt match
 	return false
+}
+
+func Login(c *gin.Context) {
+	var loginData struct {
+		Mail     string `json:"mail"`
+		Password string `json:"password"`
+	}
+
+	if err := c.BindJSON(&loginData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	if CheckUserCredentials(c, loginData.Mail, loginData.Password) {
+		return
+	} else {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid email or password"})
+		//c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
+		return
+	}
 }
 
 // UserCreate creates a new user
@@ -60,7 +92,9 @@ func UserCreate(c *gin.Context) {
 
 	// Return response
 	c.JSON(201, gin.H{
-		"user": newUser,
+		"user":    newUser,
+		"success": true,
+		"message": "User successfully created",
 	})
 }
 
